@@ -461,6 +461,22 @@
                 ],
                 systemPrompt: 'Você é um professor de Ciências da Natureza (Biologia, Física e Química). Estruture suas explicações de forma didática usando Markdown e LaTeX quando houver fórmulas: 1) **Conceito Fundamental**, 2) **Como Funciona na Prática**, 3) **Fórmulas ou Equações Relevantes** (se aplicável), 4) **Exemplo do Cotidiano** e 5) **Curiosidade Científica**. Responda em Português (PT-BR).'
             },
+            geografia: {
+                id: 'geografia',
+                name: 'Geografia & Geopolítica',
+                shortName: 'Geografia',
+                icon: 'globe',
+                color: 'emerald',
+                description: 'Clima, relevo, cartografia e geopolítica mundial',
+                placeholder: 'Pergunte sobre fusos horários, relevo, conflitos ou globalização...',
+                suggestions: [
+                    'Explique as Fases da Globalização e Blocos Econômicos',
+                    'Como funcionam os fusos horários e a Linha Internacional de Data?',
+                    'Quais são as principais características das placas tectônicas?',
+                    'Explique os biomas brasileiros e os impactos do desmatamento'
+                ],
+                systemPrompt: 'Você é um professor especialista em Geografia Física, Humana e Geopolítica. Estruture suas explicações com clareza utilizando Markdown: 1) **Contexto Espacial / Regional**, 2) **Fatores Físicos ou Sociais Envolvidos**, 3) **Impactos na Sociedade ou na Natureza**, e 4) **Exemplo Prático ou Estudo de Caso**. Responda em Português (PT-BR).'
+            },
             ingles: {
                 id: 'ingles',
                 name: 'Inglês & Conversação',
@@ -517,8 +533,8 @@
             amber: { bg: 'bg-amber-50 dark:bg-amber-950/50', text: 'text-amber-600 dark:text-amber-400', border: 'border-amber-200 dark:border-amber-800/60', activePill: 'bg-amber-600 text-white border-amber-600' },
             rose: { bg: 'bg-rose-50 dark:bg-rose-950/50', text: 'text-rose-600 dark:text-rose-400', border: 'border-rose-200 dark:border-rose-800/60', activePill: 'bg-rose-600 text-white border-rose-600' },
             teal: { bg: 'bg-teal-50 dark:bg-teal-950/50', text: 'text-teal-600 dark:text-teal-400', border: 'border-teal-200 dark:border-teal-800/60', activePill: 'bg-teal-600 text-white border-teal-600' },
-            sky: { bg: 'bg-sky-50 dark:bg-sky-950/50', text: 'text-sky-600 dark:text-sky-400', border: 'border-sky-200 dark:border-sky-800/60', activePill: 'bg-sky-600 text-white border-sky-600' },
             emerald: { bg: 'bg-emerald-50 dark:bg-emerald-950/50', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800/60', activePill: 'bg-emerald-600 text-white border-emerald-600' },
+            sky: { bg: 'bg-sky-50 dark:bg-sky-950/50', text: 'text-sky-600 dark:text-sky-400', border: 'border-sky-200 dark:border-sky-800/60', activePill: 'bg-sky-600 text-white border-sky-600' },
             purple: { bg: 'bg-purple-50 dark:bg-purple-950/50', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800/60', activePill: 'bg-purple-600 text-white border-purple-600' }
         };
 
@@ -667,7 +683,7 @@
                 if (modeId === 'quiz') {
                     quizChipsEl.classList.remove('hidden');
                     quizChipsEl.classList.add('flex');
-                    const quickSubjects = ['Matemática', 'História', 'Português', 'Ciências', 'Inglês'];
+                    const quickSubjects = ['Matemática', 'História', 'Português', 'Ciências', 'Geografia', 'Inglês'];
                     quizChipsEl.innerHTML = quickSubjects.map(subj => `
                         <button onclick="sendMessage('Gere um quiz interativo de 5 perguntas sobre ${subj}')" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 transition-colors">
                             + ${subj}
