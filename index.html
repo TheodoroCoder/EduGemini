@@ -298,7 +298,7 @@
                     </p>
 
                     <!-- Seletor Visual de Modos na Tela Inicial -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 w-full max-w-4xl mb-8" id="welcome-mode-cards">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2.5 w-full max-w-5xl mb-8" id="welcome-mode-cards">
                         <!-- Preenchido via JS -->
                     </div>
 
@@ -493,6 +493,22 @@
                 ],
                 systemPrompt: 'Você é um professor de Inglês bilíngue especializado em ensinar falantes de português. Explique regras gramaticais e vocabulário em Português com exemplos claros em Inglês (acompanhados de tradução e dicas de pronúncia). Se o aluno escrever em inglês querendo conversar, responda naturalmente em inglês e adicione ao final uma seção breve "💡 Dicas e Correções" em português. Alerte sobre falsos cognatos quando pertinente.'
             },
+            tecnologia: {
+                id: 'tecnologia',
+                name: 'Tecnologia & Programação',
+                shortName: 'Tecnologia',
+                icon: 'code',
+                color: 'violet',
+                description: 'Lógica de programação, algoritmos e ferramentas',
+                placeholder: 'Pergunte sobre código, lógica, HTML/CSS, Python ou softwares...',
+                suggestions: [
+                    'Explique o que são variáveis, loops e funções em programação',
+                    'Como funciona o HTML, CSS e JavaScript no desenvolvimento web?',
+                    'Escreva um algoritmo simples em Python para calcular média',
+                    'Quais são as boas práticas de segurança digital e senhas?'
+                ],
+                systemPrompt: 'Você é um mentor especialista em Tecnologia, Computação e Programação. Explique conceitos de lógica de programação, algoritmos, desenvolvimento web e ferramentas digitais com clareza, exemplos de código bem comentados em blocos Markdown e analogias simples. Responda em Português (PT-BR).'
+            },
             guia: {
                 id: 'guia',
                 name: 'Guia de Estudos',
@@ -523,7 +539,7 @@
                     'Desafio de Matemática Básica e Porcentagem',
                     'Quiz de Inglês: Tempos Verbais e Vocabulário'
                 ],
-                systemPrompt: 'Você é um elaborador de questões educacionais. Gere perguntas de múltipla escolha claras, bem formuladas, com nível progressivo de dificuldade e explicações didáticas detalhadas para cada resposta em Português (PT-BR).'
+                systemPrompt: 'Você é um elaborador de questões educacionais. Gere perguntas de múltipla escolha claras, bien formuladas, com nível progressivo de dificuldade e explicações didáticas detalhadas para cada resposta em Português (PT-BR).'
             }
         };
 
@@ -535,6 +551,7 @@
             teal: { bg: 'bg-teal-50 dark:bg-teal-950/50', text: 'text-teal-600 dark:text-teal-400', border: 'border-teal-200 dark:border-teal-800/60', activePill: 'bg-teal-600 text-white border-teal-600' },
             emerald: { bg: 'bg-emerald-50 dark:bg-emerald-950/50', text: 'text-emerald-600 dark:text-emerald-400', border: 'border-emerald-200 dark:border-emerald-800/60', activePill: 'bg-emerald-600 text-white border-emerald-600' },
             sky: { bg: 'bg-sky-50 dark:bg-sky-950/50', text: 'text-sky-600 dark:text-sky-400', border: 'border-sky-200 dark:border-sky-800/60', activePill: 'bg-sky-600 text-white border-sky-600' },
+            violet: { bg: 'bg-violet-50 dark:bg-violet-950/50', text: 'text-violet-600 dark:text-violet-400', border: 'border-violet-200 dark:border-violet-800/60', activePill: 'bg-violet-600 text-white border-violet-600' },
             purple: { bg: 'bg-purple-50 dark:bg-purple-950/50', text: 'text-purple-600 dark:text-purple-400', border: 'border-purple-200 dark:border-purple-800/60', activePill: 'bg-purple-600 text-white border-purple-600' }
         };
 
@@ -683,7 +700,7 @@
                 if (modeId === 'quiz') {
                     quizChipsEl.classList.remove('hidden');
                     quizChipsEl.classList.add('flex');
-                    const quickSubjects = ['Matemática', 'História', 'Português', 'Ciências', 'Geografia', 'Inglês'];
+                    const quickSubjects = ['Matemática', 'História', 'Português', 'Ciências', 'Geografia', 'Inglês', 'Tecnologia'];
                     quizChipsEl.innerHTML = quickSubjects.map(subj => `
                         <button onclick="sendMessage('Gere um quiz interativo de 5 perguntas sobre ${subj}')" class="px-2.5 py-1 rounded-full text-[11px] font-semibold bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-950/70 dark:text-purple-300 transition-colors">
                             + ${subj}
@@ -860,7 +877,7 @@
                 ? 'w-2 h-2 rounded-full bg-emerald-500 shadow-xs' 
                 : 'w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-600';
         }
-// ... existing code ... -->
+
         // ==========================================
         // CHAMADAS À API GEMINI COM EXPONENTIAL BACKOFF
         // ==========================================
@@ -884,7 +901,6 @@
                             const errData = await response.json().catch(() => ({}));
                             const apiMsg = errData.error?.message || `Erro na API (${response.status})`;
                             
-                            // Se for erro de permissão/403 neste modelo, tenta imediatamente o próximo modelo de fallback
                             if (response.status === 403 || apiMsg.toLowerCase().includes('permission denied')) {
                                 lastError = new Error(apiMsg);
                                 break;
@@ -912,7 +928,6 @@
         async function fetchGeminiText(userQuery, modeId) {
             const modeConfig = MODES[modeId];
 
-            // Constrói histórico recente da conversa (últimas 6 mensagens para contexto)
             const recentHistory = state.messages
                 .slice(-7, -1)
                 .filter(m => m.content)
@@ -1050,7 +1065,6 @@
             wrapper.appendChild(msgDiv);
             lucide.createIcons();
 
-            // Renderiza fórmulas matemáticas com KaTeX após inserir no DOM
             if (msg.role === 'model' && msg.mode !== 'quiz') {
                 renderMathInElement(msgDiv, {
                     delimiters: [
@@ -1063,7 +1077,6 @@
                 });
             }
 
-            // Inicializa interatividade do Quiz se for modo quiz
             if (msg.role === 'model' && msg.mode === 'quiz' && msg.quizData) {
                 initQuizInstance(msg.quizData, msgDiv.querySelector('[data-quiz-id]').getAttribute('data-quiz-id'));
             }
@@ -1095,15 +1108,12 @@
             if (timelineEvents.length > 0) {
                 const timelineItems = timelineEvents.map((ev, idx) => `
                     <div class="relative pl-8 pb-7 last:pb-0 group">
-                        <!-- Linha vertical conectora -->
                         ${idx !== timelineEvents.length - 1 ? '<div class="absolute left-[11px] top-6 bottom-0 w-0.5 bg-gradient-to-b from-amber-500 to-indigo-500/40"></div>' : ''}
                         
-                        <!-- Marcador circular -->
                         <div class="absolute left-0 top-1 w-6 h-6 rounded-full bg-amber-500/20 dark:bg-amber-500/30 border-2 border-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <div class="w-2 h-2 rounded-full bg-amber-600 dark:bg-amber-400"></div>
                         </div>
 
-                        <!-- Card do Evento -->
                         <div class="bg-white dark:bg-[#161718] border border-slate-200/80 dark:border-slate-700/80 rounded-2xl p-4 shadow-xs hover:border-amber-400/70 transition-all">
                             <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300">
@@ -1176,7 +1186,6 @@
             const quizId = `quiz-${uniqueId}`;
             return `
                 <div data-quiz-id="${quizId}" class="bg-white dark:bg-[#161718] border border-slate-200 dark:border-slate-700/80 rounded-2xl overflow-hidden shadow-sm">
-                    <!-- Cabeçalho do Quiz -->
                     <div class="p-4 md:p-5 bg-gradient-to-r from-indigo-600/10 via-purple-600/10 to-pink-600/10 border-b border-slate-200/80 dark:border-slate-700/80">
                         <div class="flex items-center justify-between gap-2 mb-2">
                             <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">${escapeHtml(quizData.subject || 'Quiz Interativo')}</span>
@@ -1186,16 +1195,12 @@
                         </div>
                         <h3 class="font-bold text-base md:text-lg text-slate-900 dark:text-white">${escapeHtml(quizData.quizTitle || 'Teste seus conhecimentos')}</h3>
                         
-                        <!-- Barra de Progresso -->
                         <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mt-3 overflow-hidden">
                             <div id="${quizId}-progress" class="h-full bg-gradient-to-r from-indigo-600 to-purple-600 transition-all duration-300" style="width: ${(1 / quizData.questions.length) * 100}%"></div>
                         </div>
                     </div>
 
-                    <!-- Corpo da Questão -->
-                    <div id="${quizId}-body" class="p-4 md:p-6">
-                        <!-- Renderizado dinamicamente via JS -->
-                    </div>
+                    <div id="${quizId}-body" class="p-4 md:p-6"></div>
                 </div>
             `;
         }
@@ -1220,7 +1225,6 @@
             const counterEl = document.getElementById(`${quizId}-counter`);
             const progressEl = document.getElementById(`${quizId}-progress`);
 
-            // Tela de Resultado Final
             if (currentIndex >= total) {
                 counterEl.textContent = 'Concluído';
                 progressEl.style.width = '100%';
@@ -1261,7 +1265,6 @@
                 return;
             }
 
-            // Renderiza Questão Atual
             const q = data.questions[currentIndex];
             const selectedOption = answers[currentIndex];
             const isAnswered = selectedOption !== null;
@@ -1384,7 +1387,6 @@
         // UTILITÁRIOS DE UI, MARKDOWN E HISTÓRICO
         // ==========================================
         function renderMarkdown(mdText) {
-            // Protege blocos LaTeX antes do Marked processar underscores/asteriscos
             const mathBlocks = [];
             let protectedText = mdText
                 .replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
@@ -1398,7 +1400,6 @@
 
             let html = marked.parse(protectedText);
 
-            // Restaura blocos LaTeX
             html = html.replace(/%%MATHBLOCK(\d+)%%/g, (_, idx) => mathBlocks[parseInt(idx, 10)]);
             return html;
         }
@@ -1544,7 +1545,6 @@
                 }
             }
 
-            // Mantém no máximo 15 sessões salvas
             state.sessions = state.sessions.slice(0, 15);
             try {
                 localStorage.setItem('edugemini_sessions', JSON.stringify(state.sessions));
@@ -1626,7 +1626,7 @@
                     <p class="text-slate-500 dark:text-slate-400 max-w-xl text-sm md:text-base mb-8">
                         Escolha um modo especializado abaixo ou faça uma pergunta. Resolvo matemática passo a passo, crio linhas do tempo históricas, guias de estudo e quizzes interativos.
                     </p>
-                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 w-full max-w-4xl mb-8" id="welcome-mode-cards"></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2.5 w-full max-w-5xl mb-8" id="welcome-mode-cards"></div>
                     <div class="w-full max-w-3xl text-left">
                         <div class="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
                             <p class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
